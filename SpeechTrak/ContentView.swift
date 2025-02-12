@@ -12,7 +12,7 @@ struct ContentView: View {
         NavigationStack{
             ScrollView{
                 VStack(spacing: 20) {
-                    ChildDetailView(child: Child(name: "Henry Hickensburgh", pictureName: "person.crop.circle", speechSounds: ["Th, th, th"]))
+                    ChildDetailView(child: Child.mockChild)
                     
                     
                 }
@@ -67,8 +67,8 @@ struct ChildDetailView: View {
                 
                 // List out the speech sounds
                 HStack {
-                    ForEach(child.speechSounds, id: \.self) { sound in
-                        Text(sound)
+                    ForEach(child.speechProfile.soundsInProgress, id: \.self) { sound in
+                        Text(sound.stringEquivalent)
                             .padding(6)
                             .background(Color.green.opacity(0.2))
                             .cornerRadius(6)
@@ -87,8 +87,3 @@ struct ChildDetailView: View {
     }
 }
 
-struct Child {
-    var name: String
-    var pictureName: String
-    var speechSounds: [String]
-}
