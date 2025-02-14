@@ -9,19 +9,12 @@ import SwiftUI
 
 struct ChildPageView: View {
     var child: Child
+    @State private var isExercisePresented = false
     
     var body: some View {
         VStack(spacing: 16) {
-            // Back Button & Child Info
-            HStack {
-                Button(action: {
-                    // Handle back navigation
-                }) {
-                    Image(systemName: "arrow.left")
-                        .font(.title)
-                        .foregroundColor(.blue)
-                }
-                Spacer()
+            //Child Info
+
                 VStack {
                     Image(systemName: child.pictureName) // Child's Avatar
                         .resizable()
@@ -32,8 +25,7 @@ struct ChildPageView: View {
                         .font(.title2)
                         .fontWeight(.bold)
                 }
-                Spacer()
-            }
+            
             .padding()
 
             // Last Practiced Sound & Stats
@@ -84,7 +76,7 @@ struct ChildPageView: View {
 
             // Start New Exercise Button
             Button(action: {
-                // Handle start exercise action
+                isExercisePresented = true
             }) {
                 Text("🎤 Start New Exercise")
                     .font(.title2)
@@ -96,6 +88,9 @@ struct ChildPageView: View {
                     .padding(.horizontal)
             }
             .padding(.bottom, 20)
+            .sheet(isPresented: $isExercisePresented) {
+                SpeechExerciseView(sound: Sound(stringEquivalent: "R", sessionHistory: [0.8]), word: "Mock")
+            }
         }
         .padding()
     }
@@ -143,4 +138,6 @@ struct Child {
             soundsInProgress: [Sound(stringEquivalent: "R", sessionHistory: [75, 80, 85, 90]), Sound(stringEquivalent: "S", sessionHistory: [60, 65, 70, 75]), Sound(stringEquivalent: "L", sessionHistory: [85, 88, 92, 95])] // Active sounds being worked on
         )
     )
+    
+    static let mockChildren = [mockChild]
 }

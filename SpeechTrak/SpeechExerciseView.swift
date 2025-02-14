@@ -7,9 +7,11 @@
 
 import SwiftUI
 
-struct ExerciseView: View {
+struct SpeechExerciseView: View {
     var sound: Sound
     var word: String
+    
+    @Environment(\.dismiss) private var dismiss //close modal
     @State private var repetitions = 0
     @State private var isRecording = false
     
@@ -18,7 +20,7 @@ struct ExerciseView: View {
             // Back Button & Title
             HStack {
                 Button(action: {
-                    // Handle back navigation
+                    dismiss()
                 }) {
                     Image(systemName: "arrow.left")
                         .font(.title)
@@ -106,7 +108,7 @@ struct ExerciseView: View {
             
             // End Exercise Button
             Button(action: {
-                // Handle end exercise logic (e.g., save progress, navigate back)
+                dismiss()
             }) {
                 Text("🏁 End Exercise")
                     .font(.title2)
@@ -125,5 +127,5 @@ struct ExerciseView: View {
 
 #Preview {
     let sampleSound = Sound(stringEquivalent: "R", sessionHistory: [80, 85, 90])
-    ExerciseView(sound: sampleSound, word: "Rabbit")
+    SpeechExerciseView(sound: sampleSound, word: "Rabbit")
 }
