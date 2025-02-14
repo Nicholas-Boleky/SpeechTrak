@@ -12,7 +12,11 @@ struct ContentView: View {
         NavigationStack{
             ScrollView{
                 VStack(spacing: 20) {
-                    ChildDetailView(child: Child.mockChild)
+                    ForEach(Child.mockChildren, id: \.name) { child in
+                        NavigationLink(destination: ChildPageView(child: child)) {
+                            ChildDetailView(child: child)
+                        }
+                    }
                     
                     
                 }
@@ -34,7 +38,7 @@ struct ContentView: View {
                 //            }
                 
             }
-            .tint(.pink)
+            .tint(.teal)
         }
     }
 }
