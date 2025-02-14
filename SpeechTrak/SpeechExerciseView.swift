@@ -126,6 +126,6 @@ struct SpeechExerciseView: View {
 }
 
 #Preview {
-    let sampleSound = Sound(stringEquivalent: "R", sessionHistory: [80, 85, 90])
+    let sampleSound = Sound(stringEquivalent: "R")
     SpeechExerciseView(sound: sampleSound, word: "Rabbit")
 }
