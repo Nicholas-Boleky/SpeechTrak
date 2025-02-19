@@ -30,7 +30,7 @@ struct ChildPageView: View {
 
             // Last Practiced Sound & Stats
             VStack(spacing: 10) {
-                Text("🎯 Last Sound Practiced: '\(child.speechProfile.lastPracticedSound?.stringEquivalent)'")
+                Text("🎯 Last Sound Practiced: '\(child.speechProfile.lastPracticedSound?.soundType.rawValue)'")
                     .font(.headline)
                     .padding(.vertical, 4)
                     .frame(maxWidth: .infinity)
@@ -55,10 +55,23 @@ struct ChildPageView: View {
             }
             .padding()
             .background(RoundedRectangle(cornerRadius: 12).fill(Color.gray.opacity(0.1)))
+            
+            VStack {
+                Text("\(child.name)'s Progress")
+                    .font(.title2)
+                    .padding()
+                List(child.speechProfile.soundsInProgress.sorted(by: { $0.soundType.rawValue < $1.soundType.rawValue }), id: \.self) { sound in
+                    HStack {
+                        Text(sound.soundType.rawValue) // Show the sound name
+                        Spacer()
+                        Text("\(String(format: "%.0f", sound.sessionHistory.map { $0.accuracy }.average()))%") // Show avg accuracy
+                    }
+                }
 
+            }
             // Graph Placeholder
             VStack {
-                Text("📈 Progress Graph (\(child.speechProfile.lastPracticedSound?.stringEquivalent))")
+                Text("📈 Progress Graph (\(child.speechProfile.lastPracticedSound?.soundType.rawValue))")
                     .font(.headline)
                     .padding(.vertical, 4)
                     .frame(maxWidth: .infinity)
@@ -89,7 +102,7 @@ struct ChildPageView: View {
             }
             .padding(.bottom, 20)
             .sheet(isPresented: $isExercisePresented) {
-                SpeechExerciseView(sound: Sound(stringEquivalent: "R"), word: "Mock")
+                SpeechExerciseView(child: child, sound: Sound(soundType: .r, position: .beginning), word: "Rabbit")
             }
         }
         .padding()

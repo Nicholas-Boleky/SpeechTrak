@@ -14,6 +14,6 @@ struct SpeechTrakApp: App {
         WindowGroup {
             ContentView()
         }
-        .modelContainer(for: [Child.self, SpeechProfile.self, Sound.self, PracticeSession.self]) //SwiftData Models
+        .modelContainer(for: [Child.self]) //SwiftData Models
     }
 }

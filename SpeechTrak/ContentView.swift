@@ -109,7 +109,7 @@ struct ChildDetailView: View {
                 // List out the speech sounds
                 HStack {
                     ForEach(child.speechProfile.soundsInProgress, id: \.self) { sound in
-                        Text(sound.stringEquivalent)
+                        Text(sound.soundType.rawValue)
                             .padding(6)
                             .background(Color.green.opacity(0.2))
                             .cornerRadius(6)
