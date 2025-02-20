@@ -9,19 +9,12 @@ import SwiftUI
 
 struct ChildPageView: View {
     var child: Child
+    @State private var isExercisePresented = false
     
     var body: some View {
         VStack(spacing: 16) {
-            // Back Button & Child Info
-            HStack {
-                Button(action: {
-                    // Handle back navigation
-                }) {
-                    Image(systemName: "arrow.left")
-                        .font(.title)
-                        .foregroundColor(.blue)
-                }
-                Spacer()
+            //Child Info
+
                 VStack {
                     Image(systemName: child.pictureName) // Child's Avatar
                         .resizable()
@@ -32,13 +25,12 @@ struct ChildPageView: View {
                         .font(.title2)
                         .fontWeight(.bold)
                 }
-                Spacer()
-            }
+            
             .padding()
 
             // Last Practiced Sound & Stats
             VStack(spacing: 10) {
-                Text("🎯 Last Sound Practiced: '\(child.speechProfile.lastPracticedSound.stringEquivalent)'")
+                Text("🎯 Last Sound Practiced: '\(child.speechProfile.lastPracticedSound?.soundType.rawValue)'")
                     .font(.headline)
                     .padding(.vertical, 4)
                     .frame(maxWidth: .infinity)
@@ -48,7 +40,7 @@ struct ChildPageView: View {
                 HStack {
                     Text("🔥 Streak: 5 Days") // Placeholder for now
                     Spacer()
-                    Text("✅ Avg Accuracy: \(String(format: "%.0f", child.speechProfile.lastPracticedSound.sessionHistory.average()))%")
+                    Text("✅ Avg Accuracy: \(String(format: "%.0f", child.speechProfile.lastPracticedSound?.sessionHistory.first?.accuracy ?? 0.0))%")
                 }
                 .font(.subheadline)
                 .padding(.horizontal)
@@ -63,10 +55,23 @@ struct ChildPageView: View {
             }
             .padding()
             .background(RoundedRectangle(cornerRadius: 12).fill(Color.gray.opacity(0.1)))
+            
+            VStack {
+                Text("\(child.name)'s Progress")
+                    .font(.title2)
+                    .padding()
+                List(child.speechProfile.soundsInProgress.sorted(by: { $0.soundType.rawValue < $1.soundType.rawValue }), id: \.self) { sound in
+                    HStack {
+                        Text(sound.soundType.rawValue) // Show the sound name
+                        Spacer()
+                        Text("\(String(format: "%.0f", sound.sessionHistory.map { $0.accuracy }.average()))%") // Show avg accuracy
+                    }
+                }
 
+            }
             // Graph Placeholder
             VStack {
-                Text("📈 Progress Graph (\(child.speechProfile.lastPracticedSound.stringEquivalent))")
+                Text("📈 Progress Graph (\(child.speechProfile.lastPracticedSound?.soundType.rawValue))")
                     .font(.headline)
                     .padding(.vertical, 4)
                     .frame(maxWidth: .infinity)
@@ -84,7 +89,7 @@ struct ChildPageView: View {
 
             // Start New Exercise Button
             Button(action: {
-                // Handle start exercise action
+                isExercisePresented = true
             }) {
                 Text("🎤 Start New Exercise")
                     .font(.title2)
@@ -96,6 +101,9 @@ struct ChildPageView: View {
                     .padding(.horizontal)
             }
             .padding(.bottom, 20)
+            .sheet(isPresented: $isExercisePresented) {
+                SpeechExerciseView(child: child, sound: Sound(soundType: .r, position: .beginning), word: "Rabbit")
+            }
         }
         .padding()
     }
@@ -114,33 +122,4 @@ struct ChildPageView_Previews: PreviewProvider {
     static var previews: some View {
         ChildPageView(child: Child.mockChild)
     }
-}
-
-// Represents a single sound, tracking its practice history
-struct Sound: Hashable {
-    var stringEquivalent: String  // e.g., "R", "S", "L"
-    var sessionHistory: [Double]  // Stores accuracy percentages for each session
-}
-
-// Represents the speech progress for a child
-struct SpeechProfile {
-    var lastPracticedSound: Sound  // The most recent sound practiced
-    var soundsInProgress: [Sound]  // Sounds the child is currently working on
-}
-
-// Represents a child in the system
-struct Child {
-    var name: String
-    var pictureName: String  // Can reference an asset image
-    var speechProfile: SpeechProfile
-
-    // Mock child instance
-    static let mockChild = Child(
-        name: "Charlie",
-        pictureName: "person.circle.fill", // Make sure this asset exists in your project
-        speechProfile: SpeechProfile(
-            lastPracticedSound: Sound(stringEquivalent: "R", sessionHistory: [75, 80, 85, 90]),  // Most recently practiced sound
-            soundsInProgress: [Sound(stringEquivalent: "R", sessionHistory: [75, 80, 85, 90]), Sound(stringEquivalent: "S", sessionHistory: [60, 65, 70, 75]), Sound(stringEquivalent: "L", sessionHistory: [85, 88, 92, 95])] // Active sounds being worked on
-        )
-    )
 }

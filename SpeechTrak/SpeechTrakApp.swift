@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct SpeechTrakApp: App {
@@ -13,5 +14,6 @@ struct SpeechTrakApp: App {
         WindowGroup {
             ContentView()
         }
+        .modelContainer(for: [Child.self]) //SwiftData Models
     }
 }

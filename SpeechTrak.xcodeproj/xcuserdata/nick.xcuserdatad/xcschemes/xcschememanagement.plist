@@ -6,8 +6,28 @@
 	<dict>
 		<key>SpeechTrak.xcscheme_^#shared#^_</key>
 		<dict>
+			<key>isShown</key>
+			<true/>
 			<key>orderHint</key>
 			<integer>0</integer>
+		</dict>
+	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict>
+		<key>011189EA2D584D8D00F4DB65</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>011189FA2D584D8E00F4DB65</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>01118A042D584D8F00F4DB65</key>
+		<dict>
+			<key>primary</key>
+			<true/>
 		</dict>
 	</dict>
 </dict>
