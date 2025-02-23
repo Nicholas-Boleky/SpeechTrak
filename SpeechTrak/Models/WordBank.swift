@@ -8,7 +8,7 @@
 import Foundation
 
 struct WordBank {
-    // 🔥 Full list of hardcoded words
+    // Full list of hardcoded words
     static let words: [Word] = [
         //MARK: /p/ Sound
            Word(text: "pan", soundPositions: [.init(sound: .p, position: .beginning)]),
