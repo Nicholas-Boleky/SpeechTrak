@@ -102,7 +102,10 @@ struct ChildPageView: View {
             }
             .padding(.bottom, 20)
             .sheet(isPresented: $isExercisePresented) {
-                SpeechExerciseView(child: child, sound: Sound(soundType: .r, position: .beginning), word: "Rabbit")
+                NavigationStack{
+                    SoundPositionSelectionView(child: child, isPresented: $isExercisePresented)
+                }
+//                SpeechExerciseView(child: child, sound: Sound(soundType: .r, position: .beginning), word: "Rabbit")
             }
         }
         .padding()

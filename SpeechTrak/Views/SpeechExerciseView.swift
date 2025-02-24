@@ -9,11 +9,11 @@ import SwiftUI
 
 struct SpeechExerciseView: View {
     var child: Child
-    var sound: Sound
-    var word: String
+    var word: Word
+    @Binding var isPresented: Bool
     
     @Environment(\.modelContext) private var modelContext
-    @Environment(\.dismiss) private var dismiss //close modal view
+   // @Environment(\.dismiss) private var dismiss //close modal view
     @State private var repetitionsCorrect = 0
     @State private var repetitionsIncorrect = 0
 //    @State private var isRecording = false
@@ -24,7 +24,7 @@ struct SpeechExerciseView: View {
             // Back Button & Title
             HStack {
                 Button(action: {
-                    dismiss()
+                   // dismiss()
                 }) {
                     Image(systemName: "arrow.left")
                         .font(.title)
@@ -40,14 +40,14 @@ struct SpeechExerciseView: View {
             
             // Sound & Word Being Practiced
             VStack(spacing: 10) {
-                Text("🎯 Practicing: '\(sound.soundType.rawValue)'")
+                Text("🎯 Practicing: '\(displayedSound().rawValue.uppercased())'")
                     .font(.headline)
                     .padding()
                     .frame(maxWidth: .infinity)
                     .background(Color.gray.opacity(0.2))
                     .cornerRadius(8)
                 
-                Text("Word: \(word)")
+                Text("Word: \(word.text.capitalized)")
                     .font(.title)
                     .fontWeight(.bold)
                     .padding()
@@ -128,6 +128,16 @@ struct SpeechExerciseView: View {
         .padding()
     }
     
+    //MARK: - Helper Methods
+    
+    private func displayedSound() -> SpeechSound {
+        return word.soundPositions.first?.sound ?? .p
+    }
+    
+    private func displayedPosition() -> SoundPosition {
+        return word.soundPositions.first?.position ?? .beginning
+    }
+    
     private func saveSession() {
         let totalReps = repetitionsCorrect + repetitionsIncorrect
         let accuracy = totalReps > 0 ? (Double(repetitionsCorrect) / Double(totalReps)) * 100 : 0.0
@@ -140,22 +150,23 @@ struct SpeechExerciseView: View {
         )
         
         //Finds sound in progress matching the sound in this session:
-        if let existingSound = child.speechProfile.soundsInProgress.first(where: { $0.soundType == sound.soundType && $0.position == sound.position }) {
+        if let existingSound = child.speechProfile.soundsInProgress.first(where: { $0.soundType == displayedSound() && $0.position == displayedPosition() }) {
             //if found, add this practice session
             existingSound.sessionHistory.append(newSession)
         } else {
             //if not found, create new sound and add it to sounds in progress
-            let newSound = Sound(soundType: sound.soundType, position: sound.position, sessionHistory: [newSession])
+            let newSound = Sound(soundType: displayedSound(), position: displayedPosition(), sessionHistory: [newSession])
             child.speechProfile.soundsInProgress.append(newSound)
         }
         
         // Update last practiced sound in speech profile
-        child.speechProfile.lastPracticedSound = sound
+        child.speechProfile.lastPracticedSound = Sound(soundType: displayedSound(), position: displayedPosition())
         
         //save the updates to child
         do {
             try modelContext.save()
-            dismiss()
+           // dismiss()
+            isPresented = false
         } catch {
             print("Failed to save session: \(error)")
         }
@@ -168,5 +179,6 @@ struct SpeechExerciseView: View {
 
 #Preview {
     let sampleSound = Sound(soundType: .r, position: .beginning)
-    SpeechExerciseView(child: Child.mockChild, sound: sampleSound, word: "Rabbit")
+    @State var isPresented = true
+    SpeechExerciseView(child: Child.mockChild, word: Word(text: "Rabbit", soundPositions: [.init(sound: .r, position: .beginning)]), isPresented: $isPresented)
 }
