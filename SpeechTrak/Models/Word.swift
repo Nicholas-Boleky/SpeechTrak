@@ -15,7 +15,7 @@ struct SoundPositionMapping: Codable, Hashable {
 
 // Main Word model
 struct Word: Identifiable, Codable, Hashable {
-    let id = UUID()
+    var id: String { text } //use text as unique ID
     let text: String
     let soundPositions: [SoundPositionMapping]
 
