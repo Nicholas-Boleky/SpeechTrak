@@ -24,7 +24,8 @@ struct SpeechExerciseView: View {
             // Back Button & Title
             HStack {
                 Button(action: {
-                   // dismiss()
+                    //dismiss()
+                    isPresented = false
                 }) {
                     Image(systemName: "arrow.left")
                         .font(.title)
@@ -165,7 +166,7 @@ struct SpeechExerciseView: View {
         //save the updates to child
         do {
             try modelContext.save()
-           // dismiss()
+            //dismiss()
             isPresented = false
         } catch {
             print("Failed to save session: \(error)")

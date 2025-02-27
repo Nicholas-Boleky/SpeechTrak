@@ -4,20 +4,15 @@
 //
 //  Created by Nick on 2/20/25.
 //
-
-import SwiftUI
-
 import SwiftUI
 
 struct SoundPositionSelectionView: View {
     var child: Child
     @Binding var isPresented: Bool
     @EnvironmentObject var wordBankManager: WordBankManager
-   // @Environment(\.dismiss) private var dismiss
 
     @State private var selectedSound: SpeechSound? = nil
     @State private var selectedPosition: SoundPosition? = nil
-    @State private var isExercisePresented = false
     @State private var selectedWord: Word? = nil
 
     var body: some View {
@@ -30,9 +25,7 @@ struct SoundPositionSelectionView: View {
                     // Scrollable Sound Grid
                     LazyVGrid(columns: [GridItem(.adaptive(minimum: 60))], spacing: 16) {
                         ForEach(SpeechSound.allCases, id: \.self) { sound in
-                            Button(action: {
-                                selectedSound = sound
-                            }) {
+                            Button(action: { selectedSound = sound }) {
                                 Text(sound.rawValue.uppercased())
                                     .padding()
                                     .background(selectedSound == sound ? Color.blue : Color.gray.opacity(0.2))
@@ -51,9 +44,7 @@ struct SoundPositionSelectionView: View {
                     // Position Selection Buttons
                     HStack {
                         ForEach(SoundPosition.allCases, id: \.self) { position in
-                            Button(action: {
-                                selectedPosition = position
-                            }) {
+                            Button(action: { selectedPosition = position }) {
                                 Text(position.rawValue.capitalized)
                                     .padding()
                                     .background(selectedPosition == position ? Color.green : Color.gray.opacity(0.2))
@@ -79,10 +70,7 @@ struct SoundPositionSelectionView: View {
                                 .padding(.top)
 
                             ForEach(filteredWords) { word in
-                                Button(action: {
-                                    selectedWord = word
-                                    isExercisePresented = true
-                                }) {
+                                NavigationLink(destination: SpeechExerciseView(child: child, word: word, isPresented: $isPresented)) {
                                     Text(word.text.capitalized)
                                         .padding()
                                         .frame(maxWidth: .infinity)
@@ -100,9 +88,9 @@ struct SoundPositionSelectionView: View {
                 .padding()
             }
             .navigationTitle("Select Sound & Word")
-            .sheet(isPresented: $isExercisePresented) {
-                if let word = selectedWord {
-                    SpeechExerciseView(child: child, word: word, isPresented: $isPresented)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Close") { isPresented = false }
                 }
             }
         }
@@ -110,6 +98,7 @@ struct SoundPositionSelectionView: View {
 }
 
 
+// ✅ Preview for Testing
 #Preview {
     @State var isPresented = false
     SoundPositionSelectionView(child: Child.mockChild, isPresented: $isPresented)
